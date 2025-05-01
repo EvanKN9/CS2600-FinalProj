@@ -1,39 +1,75 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define cols 15
-#define rows 15
+#define COLS 20
+#define ROWS 20
 
-void initializeBoard(char board[cols][rows]) {
-  for(int i = 0; i < cols; i++){
-    for(int j = 0; j < rows; j++){
-      if(i==0||j==0||i==cols-1||j==rows-1){
-	board[i][j] = '#';
-      }
-      else {
-	board[i][j] = ' ';
-      }
+char board[ROWS][COLS];
+
+
+void initializeBoard(void) {
+  for(int y = 0; y < ROWS; y++){
+    for(int x = 0; x < COLS; x++){
+      if (y==0 || x==0 || y==ROWS-1 || x==COLS-1)
+        board[y][x] = '#';
+      else
+        board[y][x] = ' ';
     }
   }
 }
 
-void printBoard(char board[cols][rows]){
-  for(int i = 0; i < cols; i++){
-    for(int j = 0; j < rows; j++){
-      printf("%c ", board[i][j]);
+void printBoard(void){
+  for(int y = 0; y < ROWS; y++){
+    for(int x = 0; x < COLS; x++){
+      printf("%c ", board[y][x]);
     }
-    printf("\n");
+    putchar('\n');
   }
 }
 
-int main(){
-  char board[cols][rows];
+int snakeX = 10, snakeY = 10;
 
-  initializeBoard(board);
-  printBoard(board);
+void drawSnake(void) {
+  board[snakeY][snakeX] = '@';
+}
+
+void moveSnake(int dx, int dy) {
+  board[snakeY][snakeX] = ' ';
+  snakeX += dx;
+  snakeY += dy;
+
+}
+
+
+
+void read_keyboard(){
+	int ch = getchar();
+	switch(ch){
+		case 'w':
+			moveSnake(0, -1); // Move up
+			break;
+		case 's':
+			moveSnake(0, 1); // Move down
+			break;	
+		case 'a':
+			moveSnake(-1, 0); // Move left
+			break;
+		case 'd':
+			moveSnake(1, 0); // Move right
+			break;
+	}
+}
+
+
+
+int main(void) {
+  initializeBoard();
+  drawSnake();
+  printBoard();
 
   return 0;
 }
+
     
   
 	
