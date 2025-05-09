@@ -18,11 +18,12 @@ typedef struct Node {
 Node *snake = NULL;
 Point food;
 int score = 0;
-int dirX = 1, dirY = 0; // initial direction (right)
+int dirX = 1, dirY = 0; // Initial direction: right
 int gameOver = 0;
 
 // Function declarations
 void init();
+void show_menu();
 void draw();
 void spawn_food();
 void input();
@@ -33,6 +34,12 @@ int check_collision(int x, int y);
 void end_game();
 
 int main() {
+    initscr(); // Initialize ncurses
+    noecho(); // Don't echo user input
+    curs_set(FALSE); // Hide the cursor
+    keypad(stdscr, TRUE); 
+
+    show_menu(); // Show menu and wait for space to start
     init();
 
     while (!gameOver) {
@@ -46,13 +53,30 @@ int main() {
     return 0;
 }
 
+void show_menu() {
+    erase();
+    mvprintw(5, (WIDTH / 2) - 8, "Welcome to Terminal Snake!");
+    mvprintw(7, (WIDTH / 2) - 10, "Controls:");
+    mvprintw(8, (WIDTH / 2) - 10, "  - W : Move Up");
+    mvprintw(9, (WIDTH / 2) - 10, "  - A : Move Left");
+    mvprintw(10, (WIDTH / 2) - 10, "  - S : Move Down");
+    mvprintw(11, (WIDTH / 2) - 10, "  - D : Move Right");
+    mvprintw(12, (WIDTH / 2) - 10, "  - Q : Quit the game");
+    mvprintw(14, (WIDTH / 2) - 10, "Press SPACE to start the game...");
+    refresh();
+
+    // Wait for spacebar to start the game
+    timeout(-1); // Wait for input
+    int ch;
+    do {
+        ch = getch();
+    } while (ch != ' ');
+    timeout(0); // Restore non-blocking mode
+}
+
 void init() {
-    srand(time(0));         // random number generator based on current time
-    initscr();              // initialize ncurses
-    noecho();               // don't echo keypresses
-    curs_set(FALSE);        // hide terminal cursor
-    keypad(stdscr, TRUE);   // enable arrow keys
-    nodelay(stdscr, TRUE);  // changed from 50ms to nodelay for less lag
+    srand(time(0)); // random number generator based on current time
+    nodelay(stdscr, TRUE); // changed from 50ms to no delay for less lag
 
     // Create initial snake head
     snake = malloc(sizeof(Node));
@@ -61,6 +85,10 @@ void init() {
     snake->next = NULL;
 
     score = 0;
+    dirX = 1;
+    dirY = 0;
+    gameOver = 0;
+
     spawn_food();
 }
 
@@ -102,7 +130,7 @@ void input() {
             if (dirX != 1) { dirX = -1; dirY = 0; } break;
         case 'd': case KEY_RIGHT:
             if (dirX != -1) { dirX = 1; dirY = 0; } break;
-        case 'q': case 27: // quit or ESC key
+        case 'q': // quit
             gameOver = 1; break;
     }
 }
@@ -146,10 +174,10 @@ void remove_tail() {
 }
 
 int check_collision(int x, int y) {
-    // Wall collision
+    // Check for wall collision
     if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return 1;
 
-    // Self collision
+    // Check for self collision
     Node *curr = snake;
     while (curr) {
         if (curr->pos.x == x && curr->pos.y == y) return 1;
@@ -179,15 +207,15 @@ void end_game() {
     erase();
     mvprintw(HEIGHT / 2, WIDTH / 2 - 6, "Game Over!");
     mvprintw(HEIGHT / 2 + 1, WIDTH / 2 - 8, "Final Score: %d", score);
-    mvprintw(HEIGHT / 2 + 2, WIDTH / 2 - 10, "Press 'q', 'Q', or ESC to exit...");
+    mvprintw(HEIGHT / 2 + 2, WIDTH / 2 - 14, "Press 'q' or 'Q' to exit...");
     refresh();
     timeout(-1);  // wait for input
 
-    // Wait for q, Q, or ESC key to exit
+    // Wait for q or Q key to exit
     int ch;
     do {
         ch = getch();
-    } while (ch != 'q' && ch != 'Q' && ch != 27);
+    } while (ch != 'q' && ch != 'Q');
 
     endwin();
 
