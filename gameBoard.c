@@ -1,3 +1,5 @@
+// Group 1: Cristian Gramada, Ethan Wong, Evan Nguyen, Justin Nacpil
+
 #include <stdio.h>
 #include <stdlib.h>
 
