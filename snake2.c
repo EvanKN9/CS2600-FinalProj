@@ -1,3 +1,5 @@
+// Cristian Gramada, Justin Nacpil, Evan Nguyen, Ethan Wong
+
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>

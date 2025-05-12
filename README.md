@@ -1,3 +1,5 @@
+# Cristian Gramada, Justin Nacpil, Evan Nguyen, Ethan Wong
+
 Terminal Snake Game - CS Project
 
 This project is a simple Snake game written in C using the ncurses library. 
